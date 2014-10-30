@@ -1,7 +1,5 @@
 package KinectPV2;
 
-import processing.core.PApplet;
-
 /*
 Copyright (C) 2014  Thomas Sanchez Lengeling.
 KinectPV2, Kinect for Windows v2 library for processing
@@ -26,31 +24,57 @@ THE SOFTWARE.
 */
 
 /**
- * 
+ * Simple Rectangle class
  * @author Thomas Sanchez Lengeling
  *
  */
-public class KinectPV2 extends Device{
+public class KORectangle {
 	
-	public static PApplet parent;
+	float x;
+	float y;
 	
-	public KinectPV2(PApplet _p) {
-		super(_p);	
-		parent = _p;
-		
-		parent.registerMethod("dispose", this);
+	float width;
+	float height;
+	
+	
+	KORectangle(float x, float y, float width, float height){
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
 	
-	public void init(){
-		initDevice();
-		runningKinect = true;
+	public void setX(float x){
+		this.x =x;
 	}
-
-	public void dispose() {
-		System.out.println("EXIT");
-		runningKinect = false;
-		stopDevice();
+	
+	public void setY(float y){
+		this.y =y;
 	}
+	
+	public void setWidth(float w){
+		this.width =w;
+	}
+	
+	public void setHeight(float height){
+		this.height = height;
+	}
+	
+	public float getX(){
+		return x;
+	}
+	
+	public float getY(){
+		return y;
+	}
+	
+	public float getWidth(){
+		return width;
+	}
+	
+	public float getHeight(){
+		return height;
+	}
+	
 	
 }
-

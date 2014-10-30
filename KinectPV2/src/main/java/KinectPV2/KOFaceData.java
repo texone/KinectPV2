@@ -23,7 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import processing.core.PVector;
 
 
 /**
@@ -32,42 +31,85 @@ import processing.core.PVector;
  * @author thomas
  *
  */
-public class FaceData implements FaceProperties{
+public class KOFaceData{
 	
-	PVector [] facePointsColor;
-	PVector [] facePointsInfrared;
+	public static enum FaceFeature{
+		HAPPY,
+		ENGAGED,
+		LEFT_EYE_CLOSED,
+		RIGHT_EYE_CLOSED,
+		LOOKING_AWAY,
+		MOUTH_MOVED,
+		MOUTH_OPEN,
+		WEARING_GLASES
+	}
+	
+	public static enum FacePointType{
+		LEFT_EYE,
+		RIGHT_EYE,
+		NOSE,
+		LEFT_MOUTH,
+		RIGHT_MOUTH;
+	}
+	//-1
+	public static enum FaceFeatureState{
+		UNKNOWN,
+		NO,
+		YES,
+		MAYBE
+	}
+	
+	public static class FaceFeatures {
+		
+		public FaceFeature feature;
+		public FaceFeatureState state;
+		
+		/**
+		 * Create Feature
+		 * @param feature
+		 * @param state
+		 */
+		FaceFeatures(FaceFeature theFeature, FaceFeatureState theState){
+			feature = theFeature;
+			state = theState;
+		}
+		
+	}
+	
+	KOVector [] facePointsColor;
+	KOVector [] facePointsInfrared;
 	
 	FaceFeatures [] facefeatures;
 	
 	boolean faceTracked;
 	
-	Rectangle rect;
+	KORectangle rect;
 	
 	float pitch;
 	float yaw;
 	float roll;
 	
-	FaceData(){
-		facePointsColor = new PVector[5];
+	public KOFaceData(){
+		facePointsColor = new KOVector[5];
 		for(int i = 0; i < facePointsColor.length; i++)
-			facePointsColor[i] =  new PVector();
+			facePointsColor[i] =  new KOVector();
 		
-		facePointsInfrared = new PVector[5];
+		facePointsInfrared = new KOVector[5];
 		for(int i = 0; i < facePointsInfrared.length; i++)
-			facePointsInfrared[i] =  new PVector();
+			facePointsInfrared[i] =  new KOVector();
 		
-		rect = new Rectangle(0, 0, 0, 0);
+		rect = new KORectangle(0, 0, 0, 0);
 		faceTracked = false;
 		
-		facefeatures = new FaceFeatures[8];
+		facefeatures = new FaceFeatures[FaceFeature.values().length];
 		
-		for(int i = 0; i < 8; i++){
-			facefeatures[i] = new FaceFeatures(i, -1);
+		for(FaceFeature myFeature:FaceFeature.values()){
+			facefeatures[myFeature.ordinal()] = new FaceFeatures(myFeature, FaceFeatureState.UNKNOWN);
 		}
 	}
 
 	
-	protected void createFaceData(float [] rawData, int iFace){
+	public void createFaceData(float [] rawData, int iFace){
 		int index = iFace * 36;
 		if(rawData[index + 35] == 0.0)
 			faceTracked = false;
@@ -93,11 +135,9 @@ public class FaceData implements FaceProperties{
 		yaw   = rawData[index2 + 5];
 		roll  = rawData[index2 + 6];
 		
-		//System.out.println(iFace+" "+pitch+" "+yaw+" "+roll);
-		for(int i =0; i < 8; i++){
-			facefeatures[i].setFeatureType(i);
-			facefeatures[i].setState((int)rawData[index2 + 7 + i]);
-			//System.out.println(iFace+" "+facefeatures[i].getFeatureType()+" "+(int)rawData[index2 + 7 + i] );
+		for(FaceFeature myFeature:FaceFeature.values()){
+			int myState = (int)rawData[index2 + 7 + myFeature.ordinal()] + 1;
+			facefeatures[myFeature.ordinal()].state = FaceFeatureState.values()[myState];
 		}
 	}
 	
@@ -113,7 +153,7 @@ public class FaceData implements FaceProperties{
 	 * get Bounding Face Rectangle
 	 * @return Rectangle
 	 */
-	public Rectangle getBoundingRect(){
+	public KORectangle getBoundingRect(){
 		return rect;
 	}
 	
@@ -129,7 +169,7 @@ public class FaceData implements FaceProperties{
 	 * get Face Points mapped to color Space (Color Image)
 	 * @return PVector []
 	 */
-	public PVector [] getFacePointsColorMap(){
+	public KOVector [] getFacePointsColorMap(){
 		return facePointsColor;
 	}
 	
@@ -137,7 +177,7 @@ public class FaceData implements FaceProperties{
 	 * get Face Points mapped to Infrared Space (InFrared Image)
 	 * @return
 	 */
-	public PVector [] getFacePointsInfraredMap(){
+	public KOVector [] getFacePointsInfraredMap(){
 		return facePointsInfrared;
 	}
 }

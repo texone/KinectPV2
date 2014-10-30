@@ -24,41 +24,26 @@ THE SOFTWARE.
 */
 
 /**
- * Simple Rectangle class
+ * Simple Quartenion class
  * @author Thomas Sanchez Lengeling
  *
  */
-public class Rectangle {
+public class KOQuartenion {
 	
 	float x;
 	float y;
+	float z;
 	
-	float width;
-	float height;
+	float w;
 	
-	
-	Rectangle(float x, float y, float width, float height){
+	KOQuartenion(float x, float y, float z, float w){
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.z = z;
+		this.w = w;
 	}
 	
-	public void setX(float x){
-		this.x =x;
-	}
-	
-	public void setY(float y){
-		this.y =y;
-	}
-	
-	public void setWidth(float w){
-		this.width =w;
-	}
-	
-	public void setHeight(float height){
-		this.height = height;
-	}
+	KOQuartenion(){}
 	
 	public float getX(){
 		return x;
@@ -68,13 +53,12 @@ public class Rectangle {
 		return y;
 	}
 	
-	public float getWidth(){
-		return width;
+	public float getZ(){
+		return z;
 	}
 	
-	public float getHeight(){
-		return height;
+	public float getW(){
+		return w;
 	}
-	
 	
 }
