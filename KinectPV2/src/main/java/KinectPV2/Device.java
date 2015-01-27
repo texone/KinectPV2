@@ -51,11 +51,11 @@ public class Device {
 	
 	public final static int BODY_COUNT = 6;
 
-	public final static int WIDTHColor  = 1920;
-	public final static int HEIGHTColor = 1080;
+	public final static int COLOR_WIDTH  = 1920;
+	public final static int COLOR_HEIGHT = 1080;
 	
-	public final static int WIDTHDepth  = 512;
-	public final static int HEIGHTDepth = 424;
+	public final static int DEPTH_WIDTH  = 512;
+	public final static int DEPTH_HEIGHT = 424;
 	
 	public final static int Int32 = 0;
 	public final static int Float = 1;
@@ -119,6 +119,13 @@ public class Device {
 	public boolean update(){
 		return jniUpdate();
 	}
+
+	public void stop(){
+		skeleton3d = null;
+		skeletonDepth = null;
+		skeletonColor = null;
+		jniStopDevice();
+	}
 	
 	public static interface KDataListener{
 		public void onData(int [] rawData);
@@ -131,6 +138,7 @@ public class Device {
 	
 	public void addColorListener(KDataListener theColorListener){
 		_myColorListener.add(theColorListener);
+		jniEnableColorFrame(true);
 	}
 	
 	public void removeColorListener(KDataListener theColorListener){
@@ -147,6 +155,7 @@ public class Device {
 	
 	public void addDepthListener(KDataListener theColorListener){
 		_myDepthListener.add(theColorListener);
+		jniEnableDepthFrame(true);
 	}
 	
 	public void removeDepthListener(KDataListener theColorListener){
@@ -154,6 +163,7 @@ public class Device {
 	}
 	
 	private void copyDepthImg(int [] rawData){
+		System.out.println(rawData);
 		for(KDataListener myListener:new ArrayList<>(_myDepthListener)){
 			myListener.onData(rawData);
 		}
@@ -163,6 +173,7 @@ public class Device {
 	
 	public void addDepthMaskListener(KDataListener theColorListener){
 		_myDepthMaskListener.add(theColorListener);
+		jniEnableDepthMaskFrame(true);
 	}
 	
 	public void removeDepthMaskListener(KDataListener theColorListener){
@@ -179,6 +190,7 @@ public class Device {
 	
 	public void addInfraredListener(KDataListener theColorListener){
 		_myInfraredListener.add(theColorListener);
+		jniEnableInfraredFrame(true);
 	}
 	
 	public void removeInfraredListener(KDataListener theColorListener){
@@ -195,6 +207,7 @@ public class Device {
 	
 	public void addBodyTrackListener(KDataListener theColorListener){
 		_myBodyTrackListener.add(theColorListener);
+		jniEnableBodyTrackFrame(true);
 	}
 	
 	public void removeBodyTrackListener(KDataListener theColorListener){
@@ -211,6 +224,7 @@ public class Device {
 	
 	public void addLongExposureListener(KDataListener theColorListener){
 		_myLongExposureListener.add(theColorListener);
+		jniEnableLongExposureInfrared(true);
 	}
 	
 	public void removeLongExposureListener(KDataListener theColorListener){
@@ -227,6 +241,7 @@ public class Device {
 	
 	public void addPointCloudListener(KDataListener theColorListener){
 		_myPointCloudListener.add(theColorListener);
+		jniEnablePointCloud(true);
 	}
 	
 	public void removePointCloudListener(KDataListener theColorListener){
@@ -244,6 +259,7 @@ public class Device {
 	
 	public void addRawDepthListener(KDataListener theColorListener){
 		_myRawDepthListener.add(theColorListener);
+		jniEnableDepthFrame(true);
 	}
 	
 	public void removeRawDepthListener(KDataListener theColorListener){
@@ -264,6 +280,7 @@ public class Device {
 	
 	public void addPointCloudPosListener(KFloatDataListener theColorListener){
 		_myPointCloudPosListener.add(theColorListener);
+		jniEnablePointCloud(true);
 	}
 	
 	public void removePointCloudPosListener(KFloatDataListener theColorListener){
@@ -280,6 +297,7 @@ public class Device {
 	
 	public void addPointCloudColorListener(KFloatDataListener theColorListener){
 		_myPointCloudColorListener.add(theColorListener);
+		jniEnablePointCloudColor(true);
 	}
 	
 	public void removePointCloudColorListener(KFloatDataListener theColorListener){
@@ -366,56 +384,6 @@ public class Device {
 	}
 	
 	/**
-	 * Enable or Disable Color Image Capture
-	 * @param boolean toggle 
-	 */
-	public void enableColorImg(boolean toggle){
-		jniEnableColorFrame(toggle);
-	}
-	
-	/**
-	 * Enable or Disable Depth Image Capture
-	 * @param boolean toggle 
-	 */
-	public void enableDepthImg(boolean toggle){
-		jniEnableDepthFrame(toggle);
-	}
-	
-	
-	
-	/**
-	 * Enable or Disable DepthMask Image Capture
-	 * @param boolean toggle 
-	 */
-	public void enableDepthMaskImg(boolean toggle){
-		jniEnableDepthMaskFrame(toggle);
-	}
-	
-	/**
-	 * Enable or Disable Infrared Image Capture
-	 * @param boolean toggle 
-	 */
-	public void enableInfraredImg(boolean toggle){
-		jniEnableInfraredFrame(toggle);
-	}
-	
-	/**
-	 * Enable or Disable BodyTrack Image Capture
-	 * @param boolean toggle 
-	 */
-	public void enableBodyTrackImg(boolean toggle){
-		jniEnableBodyTrackFrame(toggle);
-	}
-	
-	/**
-	 * Enable or Disable LongExposure Infrared Image Capture
-	 * @param boolean toggle 
-	 */
-	public void enableLongExposureInfraredImg(boolean toggle){
-		jniEnableLongExposureInfrared(toggle);
-	}
-	
-	/**
 	 * Enable or Disable Skeleton tracking
 	 * @param boolean toggle 
 	 */
@@ -454,15 +422,6 @@ public class Device {
 	 */
 	public void enableFaceDetection(boolean toggle){
 		jniEnableFaceDetection(toggle);
-	}
-	
-	
-	/**
-	 * Enable or Disable Point Cloud from Depth 
-	 * @param boolean toggle 
-	 */
-	public void enablePointCloud(boolean toggle){
-		jniEnablePointCloud(toggle);
 	}
 	
 	/**
@@ -512,15 +471,6 @@ public class Device {
 		jniSetMirror(toggle);
 	}
 	*/
-
-	
-
-	protected void stopDevice(){
-		skeleton3d = null;
-		skeletonDepth = null;
-		skeletonColor = null;
-		jniStopDevice();
-	}
 	
 	//------JNI FUNCTIONS
 	private native void jniDevice();
