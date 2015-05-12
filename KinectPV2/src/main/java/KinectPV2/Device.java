@@ -163,7 +163,6 @@ public class Device {
 	}
 	
 	private void copyDepthImg(int [] rawData){
-		System.out.println(rawData);
 		for(KDataListener myListener:new ArrayList<>(_myDepthListener)){
 			myListener.onData(rawData);
 		}
